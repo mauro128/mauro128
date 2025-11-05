@@ -1,279 +1,262 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Coffee House</title>
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fragmentos en Bicicleta — Poemas</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
+    :root{
+      --bg1:#0f172a; /* dark navy */
+      --bg2:#071032; /* deeper */
+      --card:#0b1220;
+      --accent1:#8be9fd;
+      --accent2:#7efcc6;
+      --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.02);
+      --text: #e6f0ff;
     }
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.09), transparent), linear-gradient(180deg,var(--bg1),var(--bg2)); color:var(--text);}.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px}
 
-    body {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      min-height: 100vh;
-      background-color: #f5e9dd;
-      color: #3e2723;
-    }
+.stage{
+  width:980px;max-width:94vw;aspect-ratio:16/9;position:relative;transform-style:preserve-3d;
+  perspective:1200px;display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;
+}
 
-    header {
-      background-color: #5d4037;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 30px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10;
-    }
+/* Left: visual */
+.visual{
+  background: linear-gradient(135deg, rgba(255,255,255,0.02), transparent);
+  border-radius:20px;padding:28px;box-shadow:0 10px 40px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);backdrop-filter: blur(6px);
+  transform: translateZ(40px) rotateY(-6deg);
+  overflow:hidden;position:relative;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.6em;
-      font-weight: 700;
-    }
+.card-3d{
+  width:100%;height:100%;border-radius:14px;background:linear-gradient(180deg, rgba(11,18,32,0.7), rgba(2,6,23,0.6));display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-shadow: 0 20px 50px rgba(2,6,23,0.6), 0 2px 6px rgba(0,0,0,0.5);
+  transform: translateZ(30px);
+}
 
-    .logo img {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-    }
+.sunset{position:absolute;right:-120px;top:-60px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(190,138,255,0.14), rgba(142,223,255,0.06) 30%, rgba(0,0,0,0) 50%);filter:blur(28px);mix-blend-mode:screen}
 
-    /* Animación del logo */
-    #logo-img {
-      transition: transform 0.3s ease;
-      cursor: pointer;
-    }
+/* animated road */
+.road{position:absolute;left:0;right:0;bottom:-8%;height:42%;background:linear-gradient(180deg,#061025 0%, #02101d 100%);transform:skewY(-6deg);border-top-left-radius:60% 20px;border-top-right-radius:60% 20px;box-shadow:inset 0 8px 60px rgba(0,0,0,0.6)}
+.lane{position:absolute;left:0;right:0;top:50%;height:4px;background:linear-gradient(90deg, transparent 0 30%, rgba(255,255,255,0.06) 30% 70%, transparent 70% 100%);opacity:0.7;animation:slide 6s linear infinite}
 
-    #logo-img:hover {
-      animation: spin 2s linear infinite;
-    }
+@keyframes slide{from{background-position:0 0}to{background-position:360px 0}}
 
-    @keyframes spin {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
-    }
+/* bicycle SVG container */
+.bike-wrap{width:360px;height:220px;display:flex;align-items:center;justify-content:center;position:relative;z-index:4;transform:translateY(-8px);}
+.bike{width:360px;height:220px;filter: drop-shadow(0 18px 30px rgba(2,6,23,0.7));transform-origin:center;animation:float 6s ease-in-out infinite}
+@keyframes float{0%{transform:translateY(0) rotateZ(-2deg)}50%{transform:translateY(-8px) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(-2deg)}}
 
-    nav {
-      display: none;
-      flex-direction: column;
-      background-color: #5d4037;
-      position: absolute;
-      top: 70px;
-      right: 0;
-      width: 200px;
-      padding: 10px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      opacity: 0;
-      transform: translateY(-10px);
-    }
+/* Right panel */
+.panel{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:18px;align-items:stretch;justify-content:flex-start;box-shadow: 0 10px 40px rgba(2,6,23,0.6);
+  transform: translateZ(80px) rotateY(8deg);
+}
 
-    nav.active {
-      display: flex;
-      opacity: 1;
-      transform: translateY(0);
-    }
+h1{margin:0;font-size:20px;letter-spacing:0.6px}
+.subtitle{font-size:13px;opacity:0.8}
 
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      padding: 8px 10px;
-    }
+.fragment-area{flex:1;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(180deg,var(--glass),var(--glass-2));border-radius:12px;border:1px solid rgba(255,255,255,0.03);position:relative;overflow:hidden}
 
-    nav a:hover {
-      color: #ffe0b2;
-    }
+.fragment{font-size:20px;line-height:1.4;text-align:center;padding:8px 12px;max-width:340px;min-height:84px;display:flex;align-items:center;justify-content:center;font-style:italic;opacity:0;transform:translateY(6px);transition:opacity 700ms ease, transform 700ms ease}
+.fragment.show{opacity:1;transform:translateY(0)}
+.fragment.hide{opacity:0;transform:translateY(-8px)}
 
-    .menu-toggle {
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-    }
+.controls{display:flex;gap:12px;align-items:center;justify-content:center}
+.btn{background:linear-gradient(180deg,var(--accent1),var(--accent2));border:none;padding:12px 18px;border-radius:12px;color:#062033;font-weight:700;cursor:pointer;font-size:15px;position:relative;overflow:visible;box-shadow:0 8px 18px rgba(126,252,198,0.12), 0 2px 6px rgba(0,0,0,0.4);transform:translateZ(60px)}
+.btn:active{transform:translateY(1px)}
 
-    .menu-toggle span {
-      background-color: white;
-      height: 3px;
-      width: 25px;
-      margin: 4px 0;
-      border-radius: 2px;
-    }
+/* sparkle particles */
+.spark{position:absolute;pointer-events:none;border-radius:50%;mix-blend-mode:screen;filter:blur(0.6px)}
 
-    /* Carrusel fade */
-    .carousel {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      margin-top: 70px;
-      overflow: hidden;
-    }
+footer{font-size:12px;opacity:0.7;text-align:center}
 
-    .fade-slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
+/* responsive */
+@media (max-width:900px){.stage{grid-template-columns:1fr;grid-auto-rows:1fr}.visual{order:2}.panel{order:1}}
 
-    .fade-slide {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 1.5s ease-in-out;
-    }
-
-    .fade-slide.active {
-      opacity: 1;
-    }
-
-    .fade-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(70%);
-    }
-
-    .carousel-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #fff;
-      background: rgba(60, 34, 24, 0.6);
-      padding: 30px 40px;
-      border-radius: 12px;
-      backdrop-filter: blur(4px);
-      animation: fadeIn 1.5s ease-out;
-      max-width: 90%;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -60%); }
-      to   { opacity: 1; transform: translate(-50%, -50%); }
-    }
-
-    .carousel-content h1 {
-      font-size: 3em;
-      margin-bottom: 10px;
-    }
-
-    .carousel-content p {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      background-color: #a1887f;
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background 0.3s ease;
-    }
-
-    .btn:hover {
-      background-color: #8d6e63;
-    }
-
-    footer {
-      background-color: #5d4037;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      font-size: 0.9em;
-    }
-
-    @media (max-width: 768px) {
-      .carousel-content h1 { font-size: 2em; }
-      .carousel-content p  { font-size: 1em; }
-      .btn               { padding: 10px 20px; }
-    }
   </style>
 </head>
 <body>
-
-  <header>
-    <div class="logo">
-      <img src="/home/mauro/Documents/pagina-comercial/logo.jpeg" alt="Logo de Coffee House" id="logo-img">
-      Coffee House
+  <div class="wrap">
+    <div class="stage">
+      <div class="visual" aria-hidden="true">
+        <div class="sunset"></div>
+        <div class="card-3d">
+          <div class="bike-wrap">
+            <!-- decorative bicycle SVG (stylish, simple) -->
+            <svg class="bike" viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#7efcc6" /><stop offset="1" stop-color="#8be9fd" /></linearGradient>
+                <filter id="f1" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#061025" flood-opacity="0.6" />
+                </filter>
+              </defs>
+              <g transform="translate(40,30) scale(0.9)">
+                <circle cx="140" cy="260" r="96" stroke="url(#g1)" stroke-width="10" fill="none"/>
+                <circle cx="460" cy="260" r="96" stroke="url(#g1)" stroke-width="10" fill="none"/>
+                <g stroke="url(#g1)" stroke-width="12" stroke-linecap="round" fill="none">
+                  <path d="M140 260 L260 190 L380 190 L440 240"/>
+                  <path d="M260 190 L340 140 L410 140"/>
+                  <path d="M410 140 L480 170"/>
+                </g>
+                <circle cx="140" cy="260" r="6" fill="#062033"/>
+                <circle cx="460" cy="260" r="6" fill="#062033"/>
+                <rect x="320" y="80" width="120" height="12" rx="6" transform="rotate(-14 380 86)" fill="url(#g1)" />
+                <g transform="translate(480,70) rotate(6)">
+                  <path d="M0 0 C16 -10 32 -10 48 0" stroke="rgba(255,255,255,0.06)" stroke-width="18" stroke-linecap="round" fill="none"/>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <div style="position:absolute;left:24px;bottom:22px;color:rgba(255,255,255,0.06);font-size:11px">rodar es buscar</div>
+          <div class="road"><div class="lane"></div></div>
+        </div>
+      </div><div class="panel">
+    <div>
+      <h1>Fragmentos en Bicicleta</h1>
+      <div class="subtitle">Haz clic en el botón para ver un fragmento aleatorio. Cada fragmento aparece en cursiva y cambia con un desvanecimiento.</div>
     </div>
 
-    <nav id="menu">
-      <a href="index2.html">Inicio</a>
-      <a href="index3.html">Ofertas</a>
-    
-      <a href="contacto.html">Contacto</a>
-    </nav>
-
-    <div class="menu-toggle" id="toggle">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </header>
-
-  <section class="carousel">
-    <div class="fade-slides">
-      <div class="fade-slide active">
-        <img src="https://images.unsplash.com/photo-1556742526-795a8eac090e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=387" alt="Café espresso">
-      </div>
-      <div class="fade-slide">
-        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=80" alt="Café latte">
-      </div>
-      <div class="fade-slide">
-        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1600&q=80" alt="Granos de café">
-      </div>
-      <div class="fade-slide">
-        <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=1600&q=80" alt="Arte latte">
-      </div>
+    <div class="fragment-area" id="fragmentArea">
+      <div id="fragment" class="fragment" aria-live="polite"></div>
     </div>
 
-    <div class="carousel-content">
-      <h1>Bienvenido a Coffee House</h1>
-      <p>Disfrutá del aroma, el sabor y la experiencia del mejor café artesanal</p>
-      <a href="index3.html">
-        <button class="btn">Ver ofertas</button>
-      </a>
+    <div class="controls">
+      <button id="nextBtn" class="btn" title="Mostrar otro fragmento">✨ Mostrar fragmento</button>
     </div>
-  </section>
 
-  <footer>
-    © 2025 Coffee House — El sabor que te despierta cada día
-  </footer>
+    <footer>Diseño 3D, animaciones suaves y partículas al tocar el botón.</footer>
+  </div>
+</div>
 
-  <script>
-    const toggle = document.getElementById("toggle");
-    const menu   = document.getElementById("menu");
-    toggle.addEventListener("click", () => menu.classList.toggle("active"));
+  </div>  <script>
+    // --- Lista de 100 fragmentos (en español) ---
+    const FRAGMENTS = [
+  "Pedaleo como quien escribe contra el reloj del mundo: la cadena de mis ideas salta, se oxida, se limpia; y aun así, jamás dejo de avanzar, porque la duda es un freno roto y el aire en los radios me recuerda que el fracaso también gira.",
+  "La noche me toma del manubrio y me dobla hacia calles donde el silencio respira. Mis ruedas crujen como vértebras del tiempo, y en cada giro la ciudad se desarma en polvo eléctrico; yo busco faroles que titilan como latidos indecisos: el camino nunca está quieto, pero tampoco mi fe.",
+  "Soy engranaje y temblor: las bielas retumban mi pulso, los pedales exhalan fiebre. Si el mundo cruza un semáforo en rojo, yo sigo recto: la poesía es un cambio de marcha que no obedecerá nunca al tráfico de la costumbre.",
+  "Ajusto el asiento de mis sueños: quiero que queden a la altura del corazón. Porque si pedaleo desde la razón me canso; si lo hago desde el pecho, vuelo. Y en ese vuelo, las calles tiemblan como páginas recién nacidas.",
+  "El viento no empuja ni frena: confiesa. Se mete entre los rayos, canta en la horquilla, sopla en mis cicatrices; me dice que no existe ruta recta para el que se atreve a doblar la realidad con un timbrazo.",
+  "La cadena chirría, pero no se rinde; como mi voz cuando nadie escucha. Los dientes del plato mastican kilómetros, muerden lo imposible. Cada vuelta es insurgencia: lo que avanza no pregunta permiso.",
+  "Soy el cuadro de acero y soy la carne blanda que sostiene la rebelión. Si caigo, me levanto; si me raspo, cicatrizo en ruta. Nadie aprende equilibrio sin conversaciones secretas con el suelo.",
+  "Los frenos rozan la llanta como amantes que saben que soltar también es cuidar. Freno a veces, no para detener mi historia, sino para oírla mientras late debajo de la tierra.",
+  "Las luces traseras son promesas encendidas: brillan por los que vienen, por los que dudan, por los que tiemblan. Cada destello es un poema en código Morse para los que aún creen en la madrugada.",
+  "Hay días donde el pedal está pesado y el mundo cruje; entonces recuerdo: ninguna rueda nace redonda. La perfección es un mito, rodar es permiso.",
+  "Las calles saben mi nombre: lo escribí con barro, sudor, y un pinchazo que me enseñó paciencia. El asfalto me lee, aunque yo a veces me pierda en las curvas.",
+  "Cambio el piñón no por fatiga, sino por insurrección. Que nadie me diga con qué ritmo debo respirar; el aire que se gana a pedal no se negocia.",
+  "Un rayo de rueda es una palabra tensa: sostiene silencio y dirección. Si uno se quiebra, la rueda vibra, tiembla, pregunta. Así también yo: vulnerable y exacto.",
+  "El portaequipaje carga fantasmas, recuerdos, y una botella de agua tibia que aún sabe a esperanza. Los muertos del ayer no frenan mi rodada; solo me empujan por detrás con un susurro: seguí.",
+  "A veces no busco destino, sino fuga: salgo sabiendo que la ruta me inventa mientras avanzo. La ciudad no es mapa: es latido.",
+  "Los pedales cansados vuelven a girar, tercos como poetas sin editorial. Y aun así, nadie puede detener un sueño que se amarra al metal del deseo.",
+  "El asiento cruje y ríe: sabe que los viajes más largos empiezan torpes. A veces arde; recuerda que el cuerpo también opina.",
+  "El timbre, pequeño dios del ruido amable, sacude la quietud. No es pedido de paso: es declaración de existencia.",
+  "Si llueve, que llueva: el agua pule la duda. Las gotas golpean la rueda como teclas de una máquina antigua, escribiendo versos líquidos sobre mi camiseta.",
+  "Ajusto el casco y siento un templo sobre mi cabeza. La seguridad es un ritual para los que desean durar. Durar es un acto político.",
+  "Las calas se traban al pedal y me juran lealtad. A veces quisiera liberarme, pero hay amores que solo se descubren encadenando los pies al movimiento.",
+  "Las bocinas ladran, pero yo no discuto: pedaleos son argumentos suficientes. La paciencia es mi carril exclusivo.",
+  "En la bici, el cuerpo no espera: negocia con el mundo. Cada músculo es diplomacia, cada pedal es firma.",
+  "Me tiembla el manubrio cuando la incertidumbre sopla fuerte; entonces recuerdo que el equilibrio no es quietud, sino negociación perpetua con el caos.",
+  "Hablo con los frenos cuando la bajada promete peligro: ellos me responden con chirridos sabios, como abuelos que nunca dejaron de jugar.",
+  "El guardabarros colecciona barro como si coleccionara verdades. Lo que ensucia también salva.",
+  "En la cadena vive el tiempo: cada eslabón es un segundo, cada vuelta es una vida que nunca vuelve a ser la misma.",
+  "Mis manos rodean el manubrio como si abrazaran un destino indócil. No quiero control absoluto: quiero pacto.",
+  "Si el rodado es pequeño, los sueños compensan. La rueda grande la invento en la cabeza.",
+  "La bici no olvida: cruje donde doliste, vibra donde amaste, acelera donde fuiste valiente. Y yo, que pedaleo con cicatrices nuevas, sé que cada rueda inventa un futuro que no existía hasta hoy."
+];
 
-    const slides  = document.querySelectorAll(".fade-slide");
-    let current   = 0;
+    const fragmentEl = document.getElementById('fragment');
+    const btn = document.getElementById('nextBtn');
+    const area = document.getElementById('fragmentArea');
 
-    function showNextSlide() {
-      slides[current].classList.remove("active");
-      current = (current + 1) % slides.length;
-      slides[current].classList.add("active");
+    let currentIndex = -1;
+    let isAnimating = false;
+
+    function pickRandomIndex(){
+      if(FRAGMENTS.length===0) return -1;
+      let idx = Math.floor(Math.random()*FRAGMENTS.length);
+      // avoid immediate repeat
+      if(FRAGMENTS.length>1){
+        while(idx===currentIndex){ idx = Math.floor(Math.random()*FRAGMENTS.length); }
+      }
+      return idx;
     }
 
-    setInterval(showNextSlide, 5000);
-  </script>
+    function showFragment(){
+      if(isAnimating) return; // prevent spam
+      isAnimating = true;
 
-</body>
+      const nextIndex = pickRandomIndex();
+      const nextText = FRAGMENTS[nextIndex] || '';
+
+      // sparkle effect from button
+      createSparks(btn, 14);
+
+      if(currentIndex === -1){
+        fragmentEl.textContent = nextText;
+        fragmentEl.classList.remove('hide');
+        void fragmentEl.offsetWidth; // reflow
+        fragmentEl.classList.add('show');
+        currentIndex = nextIndex;
+        setTimeout(()=>{ isAnimating=false }, 720);
+        return;
+      }
+
+      // fade out old
+      fragmentEl.classList.remove('show');
+      fragmentEl.classList.add('hide');
+
+      // after fade, replace and fade in
+      setTimeout(()=>{
+        fragmentEl.textContent = nextText;
+        fragmentEl.classList.remove('hide');
+        void fragmentEl.offsetWidth;
+        fragmentEl.classList.add('show');
+        currentIndex = nextIndex;
+        setTimeout(()=>{ isAnimating=false }, 720);
+      }, 520);
+    }
+
+    btn.addEventListener('click', showFragment);
+
+    // small sparkle / glow particle system
+    function createSparks(originEl, count=8){
+      const rect = originEl.getBoundingClientRect();
+      for(let i=0;i<count;i++){
+        const s = document.createElement('span');
+        s.className='spark';
+        const size = (6 + Math.random()*10) + 'px';
+        s.style.width = size; s.style.height = size;
+        s.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*rect.width) + 'px';
+        s.style.top = (rect.top + rect.height/2 + (Math.random()-0.5)*rect.height) + 'px';
+        s.style.background = (Math.random()>0.5)? 'radial-gradient(circle, rgba(255,255,255,0.95), rgba(142,223,255,0.8))' : 'radial-gradient(circle, rgba(135,255,195,0.95), rgba(139,233,253,0.8))';
+        s.style.position='fixed'; s.style.zIndex=9999; s.style.pointerEvents='none';
+        document.body.appendChild(s);
+
+        // animate with JS timing
+        const dx = (Math.random()-0.5)*240;
+        const dy = - (60 + Math.random()*260);
+        const rot = (Math.random()-0.5)*720;
+        const dur = 700 + Math.random()*500;
+        s.animate([
+          { transform: `translate(0px,0px) rotate(0deg) scale(1)`, opacity:1 },
+          { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(0.4)`, opacity:0 }
+        ],{duration:dur,easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish = ()=> s.remove();
+      }
+
+      // brief glow on button
+      originEl.animate([
+        { boxShadow: '0 8px 18px rgba(126,252,198,0.18)' },
+        { boxShadow: '0 22px 40px rgba(124,231,255,0.28)' },
+        { boxShadow: '0 8px 18px rgba(126,252,198,0.18)' }
+      ],{duration:600,easing:'ease'});
+    }
+
+    // show an initial fragment after load
+    window.addEventListener('load', ()=>{
+      setTimeout(()=>{ showFragment(); }, 420);
+    });
+
+  </script></body>
 </html>
